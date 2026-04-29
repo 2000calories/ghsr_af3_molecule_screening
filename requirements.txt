@@ -1,0 +1,5 @@
+boltz>=2.0.0
+pandas>=2.2.0
+matplotlib>=3.8.0
+pyyaml>=6.0.0
+py3Dmol>=2.0.0
