@@ -1,50 +1,5 @@
 name,type,source,smiles,sequence,peptide_seq_rapidock,notes
-ghrelin_1_28_desacyl,peptide,endogenous,,GSSFLSPEHQRVQQRKESKKPPAKLQPR,,Des-acyl ghrelin sequence
-ghrelin_1_28_octanoyl_proxy,small_molecule,endogenous,,,Octanoylated ghrelin is not directly representable as plain peptide; provide SMILES manually if needed
-LEAP2_1_40,peptide,endogenous,,,,Provide validated human LEAP2(1-40) sequence before running
-GHRP_6,peptide,synthetic,,HWAWFK,H[DTR]AW[DPN]K,Canonical one-letter backbone for His-D-Trp-Ala-Trp-D-Phe-Lys-NH2 (D stereochemistry approximated via [DTR]/[DPN])
-GHRP_2,peptide,synthetic,,AFAWFK,[DAL][DPN]AW[DPN]K,Approximate backbone for D-Ala-D-2-Nal-Ala-Trp-D-Phe-Lys-NH2 (2-Nal approximated as D-Phe)
 hexarelin,peptide,synthetic,,HWAWFK,H[DTR]AW[DPN]K,Canonical one-letter backbone for His-D-2Me-Trp-Ala-Trp-D-Phe-Lys-NH2 (2-Me-D-Trp approximated as [DTR])
 ipamorelin,peptide,synthetic,,AHFFK,[AIB]H[DPN][DPN]K,Approximate backbone for Aib-His-D-2-Nal-D-Phe-Lys-NH2 (Aib/2-Nal approximated as [AIB]/[DPN])
 examorelin,peptide,synthetic,,HWAWFK,H[DTR]AW[DPN]K,Synonym of hexarelin; backbone for His-D-2Me-Trp-Ala-Trp-D-Phe-Lys-NH2
-tabimorelin,small_molecule,synthetic,,,Add canonical SMILES before running
-MK_0677_ibutamoren,small_molecule,positive_control,,,Add canonical SMILES before running
-macimorelin,small_molecule,positive_control,,,Add canonical SMILES before running
-capromorelin,small_molecule,positive_control,,,Add canonical SMILES before running
-anamorelin,small_molecule,positive_control,,,Add canonical SMILES before running
-SM_130686,small_molecule,positive_control,,,Add canonical SMILES before running
-YIL_781,small_molecule,positive_control,,,Add canonical SMILES before running
-GSK1614343,small_molecule,positive_control,,,Add canonical SMILES before running
-PF_05190457,small_molecule,positive_control,,,Add canonical SMILES before running
-curcumin,small_molecule,natural,COC1=CC(=CC1O)/C=C/C(=O)CC(=O)/C=C/C1=CC(=C(C=C1)O)OC,,Natural polyphenol
-demethoxycurcumin,small_molecule,natural,COC1=CC(=CC1O)/C=C/C(=O)CC(=O)/C=C/C1=CC(O)=CC=C1,,Curcuminoid
-EGCG,small_molecule,natural,,,Large polyphenol; add canonical SMILES before running
-quercetin,small_molecule,natural,C1=CC(=C(C=C1C2=C(C(=O)C3=C(O2)C=C(C=C3O)O)O)O)O,,Flavonol
-kaempferol,small_molecule,natural,C1=CC(=CC=C1C2=C(C(=O)C3=C(O2)C=CC(=C3)O)O)O,,Flavonol
-resveratrol,small_molecule,natural,C1=CC(=CC=C1/C=C/C2=CC(=CC(=C2)O)O)O,,Stilbenoid
-piceatannol,small_molecule,natural,C1=CC(=C(C=C1/C=C/C2=CC(=CC(=C2)O)O)O)O,,Stilbenoid
-hesperidin,small_molecule,natural,,,Glycosylated flavonoid; add canonical SMILES before running
-naringenin,small_molecule,natural,C1=CC(=CC=C1C2CC(=O)C3=C(O2)C=C(C=C3)O)O,,Flavanone
-baicalein,small_molecule,natural,C1=CC(=CC2=C1C(=O)C=C(O2)O)O,,Flavone
-luteolin,small_molecule,natural,C1=CC(=C(C=C1C2=CC(=O)C3=C(O2)C=C(C=C3O)O)O)O,,Flavone
-apigenin,small_molecule,natural,C1=CC(=CC=C1C2=CC(=O)C3=C(O2)C=CC(=C3)O)O,,Flavone
-ginsenoside_Rg1,small_molecule,natural,,,Saponin; add canonical SMILES before running
-ginsenoside_Rb1,small_molecule,natural,,,Saponin; add canonical SMILES before running
-ginsenoside_Rh2,small_molecule,natural,,,Saponin; add canonical SMILES before running
-cordycepin,small_molecule,natural,C1=NC2=C(N1)N=CN2[C@H]3C[C@H](O)[C@@H](CO)O3,,Nucleoside analog
-capsaicin,small_molecule,natural,COC1=CC(=CC=C1O)CCNC(=O)CCCC/C=C/C(C)C,,Vanilloid
-gingerol_6,small_molecule,natural,CCCCC(O)CC(=O)CC1=CC(=C(C=C1)O)OC,,Ginger phenolic ketone
-shogaol_6,small_molecule,natural,CCCCC=CC(=O)CC1=CC(=C(C=C1)O)OC,,Dehydrated gingerol
-allicin,small_molecule,natural,CS(=O)CCSSCC=C,,Organosulfur compound
-sulforaphane,small_molecule,natural,CCCS(=O)N=C=S,,Isothiocyanate
-oleanolic_acid,small_molecule,natural,CC1(CCC2(CCC3(C(=CCC4C3(CCC5(C4CC(CC5)(C)C)C)C)C)C)C)C(=O)O)C,,Triterpenoid
-ursolic_acid,small_molecule,natural,CC1(CCC2(CCC3(C(=CCC4C3(CCC5(C4CC(CC5)(C)C)C)C)C)C)C)C(=O)O)C,,Triterpenoid isomer
-glycyrrhizin,small_molecule,natural,,,Large triterpene glycoside; add canonical SMILES before running
-berberine,small_molecule,natural,COC1=CC2=C(C=C1)C3=[N+](CC2)C4=CC5=C(C=C4CC3)OCO5,,Isoquinoline alkaloid
-magnolol,small_molecule,natural,C=CC1=CC(=C(C=C1)O)CC2=CC(=C(C=C2)O)C=C,,Biphenolic neolignan
-honokiol,small_molecule,natural,C=CC1=CC=C(C=C1O)CC2=CC(=CC=C2O)C=C,,Biphenolic neolignan
-schisandrin_B,small_molecule,natural,,,Lignan; add canonical SMILES before running
-withaferin_A,small_molecule,natural,,,Steroidal lactone; add canonical SMILES before running
-theaflavin,small_molecule,natural,,,Polyphenol dimer; add canonical SMILES before running
-caffeine,small_molecule,negative_control,CN1C=NC2=C1C(=O)N(C(=O)N2C)C,,Negative control
-glucose,small_molecule,negative_control,C(C1C(C(C(C(O1)O)O)O)O)O,,Negative control
+sulforaphane,small_molecule,natural,CCCS(=O)N=C=S,,Isothiocyanate,
