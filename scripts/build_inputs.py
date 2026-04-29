@@ -65,7 +65,8 @@ def main() -> None:
         if not name or not ligand_type:
             skipped += 1
             continue
-        if ligand_type not in {"small_molecule", "peptide"}:
+        # Boltz-2 affinity head only supports small molecules; route peptides to RAPiDock instead.
+        if ligand_type != "small_molecule":
             skipped += 1
             continue
         if not value:

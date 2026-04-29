@@ -10,7 +10,16 @@ import pandas as pd
 def save_top_pose_files(df: pd.DataFrame, outputs_dir: Path, top_pose_dir: Path) -> None:
     top_pose_dir.mkdir(parents=True, exist_ok=True)
     small = df[df["type"] == "small_molecule"].head(5)
-    pep = df[df["type"] == "peptide"].sort_values("iptm", ascending=False).head(5)
+    # Prefer peptides that actually have affinity predictions; otherwise fall back to iptm.
+    pep = df[df["type"] == "peptide"].copy()
+    if "affinity_pred_value_log10IC50uM" in pep.columns:
+        pep = pep.sort_values(
+            ["affinity_pred_value_log10IC50uM", "iptm"],
+            ascending=[True, False],
+        )
+    else:
+        pep = pep.sort_values("iptm", ascending=False)
+    pep = pep.head(5)
     merged = pd.concat([small, pep], ignore_index=True)
 
     for idx, row in merged.iterrows():
@@ -40,17 +49,29 @@ def main() -> None:
 
     df = pd.read_csv(ranking_csv)
 
-    aff_df = (
-        df[df["affinity_pred_value_log10IC50uM"].notna()]
-        .sort_values("affinity_pred_value_log10IC50uM", ascending=True)
-        .head(20)
-    )
+    aff_df = df[df["affinity_pred_value_log10IC50uM"].notna()].copy()
+    aff_df = aff_df.sort_values("affinity_pred_value_log10IC50uM", ascending=True).head(20)
     if not aff_df.empty:
         plt.figure(figsize=(12, 6))
-        plt.bar(aff_df["name"], aff_df["affinity_pred_value_log10IC50uM"])
+        colors = None
+        if "source_method" in aff_df.columns:
+            cmap = {
+                "boltz2_affinity": "#1f77b4",
+                "rapidock_ref2015": "#ff7f0e",
+            }
+            colors = [cmap.get(m, "#2ca02c") for m in aff_df["source_method"]]
+        plt.bar(aff_df["name"], aff_df["affinity_pred_value_log10IC50uM"], color=colors)
         plt.xticks(rotation=65, ha="right")
         plt.ylabel("Predicted log10(IC50 uM)")
-        plt.title("Top 20 small-molecule affinity predictions")
+        plt.title("Top 20 affinity predictions")
+        if "source_method" in aff_df.columns:
+            from matplotlib.lines import Line2D
+
+            handles = [
+                Line2D([0], [0], color="#1f77b4", lw=8, label="Boltz-2 small molecule"),
+                Line2D([0], [0], color="#ff7f0e", lw=8, label="RAPiDock peptide"),
+            ]
+            plt.legend(handles=handles)
         plt.tight_layout()
         plt.savefig(plots_dir / "top20_affinity.png", dpi=180)
         plt.close()
@@ -58,7 +79,9 @@ def main() -> None:
     scatter_df = df[df["affinity_pred_value_log10IC50uM"].notna() & df["iptm"].notna()]
     if not scatter_df.empty:
         plt.figure(figsize=(8, 6))
-        for label, group in scatter_df.groupby("type"):
+        # Group by source method if available, otherwise by type.
+        group_key = "source_method" if "source_method" in scatter_df.columns else "type"
+        for label, group in scatter_df.groupby(group_key):
             plt.scatter(
                 group["iptm"],
                 group["affinity_pred_value_log10IC50uM"],

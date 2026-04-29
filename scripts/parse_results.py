@@ -61,7 +61,7 @@ def parse_affinity(aff: Dict[str, Any]) -> Tuple[Optional[float], Optional[float
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Parse Boltz-2 outputs into ranking CSV.")
+    parser = argparse.ArgumentParser(description="Parse Boltz-2 and RAPiDock outputs into ranking CSV.")
     parser.add_argument("--library", default="data/ligand_library.csv")
     parser.add_argument("--outputs-dir", default="outputs")
     parser.add_argument("--results-dir", default="results")
@@ -112,10 +112,27 @@ def main() -> None:
                 "pocket_plddt_mean": None,
                 "interface_pae_mean": interface_pae,
                 "run_seconds": run_seconds,
+                "source_method": "boltz2_affinity" if affinity_log is not None else None,
             }
         )
 
     df = pd.DataFrame(rows)
+
+    # If RAPiDock peptide results exist, merge them in (peptides only).
+    rapidock_csv = results_dir / "ranking_peptides.csv"
+    if rapidock_csv.exists():
+        rapidock_df = pd.read_csv(rapidock_csv)
+        # Drop any existing peptide rows from Boltz parsing; we will trust RAPiDock instead.
+        df = df[df["type"] != "peptide"]
+        # Align columns; add any missing columns to either frame.
+        for col in rapidock_df.columns:
+            if col not in df.columns:
+                df[col] = None
+        for col in df.columns:
+            if col not in rapidock_df.columns:
+                rapidock_df[col] = None
+        df = pd.concat([df, rapidock_df[df.columns]], ignore_index=True)
+
     # Affinity lower is better when available; fallback to ipTM (higher better)
     df["sort_affinity"] = df["affinity_pred_value_log10IC50uM"].fillna(math.inf)
     df["sort_iptm"] = df["iptm"].fillna(-1.0)

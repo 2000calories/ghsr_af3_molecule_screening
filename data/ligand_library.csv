@@ -1,12 +1,12 @@
-name,type,source,smiles,sequence,notes
-ghrelin_1_28_desacyl,peptide,endogenous,,GSSFLSPEHQRVQQRKESKKPPAKLQPR,Des-acyl ghrelin sequence
+name,type,source,smiles,sequence,peptide_seq_rapidock,notes
+ghrelin_1_28_desacyl,peptide,endogenous,,GSSFLSPEHQRVQQRKESKKPPAKLQPR,,Des-acyl ghrelin sequence
 ghrelin_1_28_octanoyl_proxy,small_molecule,endogenous,,,Octanoylated ghrelin is not directly representable as plain peptide; provide SMILES manually if needed
-LEAP2_1_40,peptide,endogenous,,,Provide validated human LEAP2(1-40) sequence before running
-GHRP_6,peptide,synthetic,,HWAWFK,Canonical one-letter backbone for His-D-Trp-Ala-Trp-D-Phe-Lys-NH2 (D stereochemistry not encoded)
-GHRP_2,peptide,synthetic,,AFAWFK,Approximate one-letter backbone for D-Ala-D-2-Nal-Ala-Trp-D-Phe-Lys-NH2 (2-Nal approximated as Phe)
-hexarelin,peptide,synthetic,,HWAWFK,Canonical one-letter backbone for His-D-2Me-Trp-Ala-Trp-D-Phe-Lys-NH2 (2-Me-D-Trp not encoded)
-ipamorelin,peptide,synthetic,,AHFFK,Approximate one-letter backbone for Aib-His-D-2-Nal-D-Phe-Lys-NH2 (Aib/2-Nal approximated)
-examorelin,peptide,synthetic,,HWAWFK,Synonym of hexarelin; one-letter backbone for His-D-2Me-Trp-Ala-Trp-D-Phe-Lys-NH2
+LEAP2_1_40,peptide,endogenous,,,,Provide validated human LEAP2(1-40) sequence before running
+GHRP_6,peptide,synthetic,,HWAWFK,H[DTR]AW[DPN]K,Canonical one-letter backbone for His-D-Trp-Ala-Trp-D-Phe-Lys-NH2 (D stereochemistry approximated via [DTR]/[DPN])
+GHRP_2,peptide,synthetic,,AFAWFK,[DAL][DPN]AW[DPN]K,Approximate backbone for D-Ala-D-2-Nal-Ala-Trp-D-Phe-Lys-NH2 (2-Nal approximated as D-Phe)
+hexarelin,peptide,synthetic,,HWAWFK,H[DTR]AW[DPN]K,Canonical one-letter backbone for His-D-2Me-Trp-Ala-Trp-D-Phe-Lys-NH2 (2-Me-D-Trp approximated as [DTR])
+ipamorelin,peptide,synthetic,,AHFFK,[AIB]H[DPN][DPN]K,Approximate backbone for Aib-His-D-2-Nal-D-Phe-Lys-NH2 (Aib/2-Nal approximated as [AIB]/[DPN])
+examorelin,peptide,synthetic,,HWAWFK,H[DTR]AW[DPN]K,Synonym of hexarelin; backbone for His-D-2Me-Trp-Ala-Trp-D-Phe-Lys-NH2
 tabimorelin,small_molecule,synthetic,,,Add canonical SMILES before running
 MK_0677_ibutamoren,small_molecule,positive_control,,,Add canonical SMILES before running
 macimorelin,small_molecule,positive_control,,,Add canonical SMILES before running
