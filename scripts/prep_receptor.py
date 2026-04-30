@@ -117,7 +117,7 @@ def main() -> None:
     extract_chain(raw_pdb_path, args.chain_id, receptor_pdb)
     print(f"Wrote full receptor to {receptor_pdb}")
 
-    if args.skip-pocket:
+    if args.skip_pocket:
         print("Skipping pocket_trunction step (--skip-pocket set).")
         return
 
