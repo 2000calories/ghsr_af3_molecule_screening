@@ -41,6 +41,8 @@ The final table is unified in `results/ranking.csv`.
 - `scripts/parse_results.py`: merge Boltz + RAPiDock rows into `results/ranking.csv`.
 - `scripts/visualize.py`: plots + top pose exports.
 - `notebooks/boltz2_ghsr_screen.ipynb`: Colab workflow notebook (Boltz-focused).
+- `notebooks/rapidock_colab_runner.ipynb`: Colab workflow notebook (RAPiDock upload/download).
+- `notebooks/rapidock_colab_drive_runner.ipynb`: Colab workflow notebook (RAPiDock reads/writes Google Drive).
 
 ## Quickstart
 
@@ -59,6 +61,12 @@ The final table is unified in `results/ranking.csv`.
    - `python scripts/parse_results.py`
 6. Visualize:
    - `python scripts/visualize.py`
+
+## Google Colab notes (RAPiDock)
+
+RAPiDock includes precompiled Linux extension modules (for example `PeptideBuilder.so`) that are built against **CPython ≤3.11**. Colab’s default notebook runtime is often **Python 3.12**, where imports can fail with errors like `undefined symbol: _PyUnicode_Ready`.
+
+Use the Colab notebooks in `notebooks/`, which install **Miniforge + a Python 3.10 conda environment** and run `inference.py` via `conda run`.
 
 ## Step-by-step: peptide IC50 from RAPiDock
 
