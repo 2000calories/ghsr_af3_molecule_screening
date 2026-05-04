@@ -6,6 +6,8 @@ __pycache__/
 # Generated data
 inputs/*.yaml
 outputs/
+results/
 results/ranking.csv
 results/plots/
 results/top_poses/
+outputs_rapidock/

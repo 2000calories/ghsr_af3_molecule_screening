@@ -1,4 +1,7 @@
 complex_name,protein_description,peptide_description
+ghrelin_1_28_desacyl,/content/drive/MyDrive/ghsr_af3_molecule_screening/data/ghsr_receptor.pdb,GSSFLSPEHQRVQQRKESKKPPAKLQPR
+ghrp_6,/content/drive/MyDrive/ghsr_af3_molecule_screening/data/ghsr_receptor.pdb,H[DTR]AW[DPN]K
+ghrp_2,/content/drive/MyDrive/ghsr_af3_molecule_screening/data/ghsr_receptor.pdb,[DAL][DPN]AW[DPN]K
 hexarelin,/content/drive/MyDrive/ghsr_af3_molecule_screening/data/ghsr_receptor.pdb,H[DTR]AW[DPN]K
 ipamorelin,/content/drive/MyDrive/ghsr_af3_molecule_screening/data/ghsr_receptor.pdb,[AIB]H[DPN][DPN]K
 examorelin,/content/drive/MyDrive/ghsr_af3_molecule_screening/data/ghsr_receptor.pdb,H[DTR]AW[DPN]K

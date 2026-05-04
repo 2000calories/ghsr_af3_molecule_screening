@@ -1,32 +1,8 @@
 #!/usr/bin/env python3
 import argparse
 import csv
-import math
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
-
-
-R_KCAL = 1.987204258e-3
-T_K = 298.15
-
-
-def reu_to_ic50_uM(ref2015_reu: float) -> Tuple[float, float, float]:
-    """
-    Convert a Rosetta REF2015 score (assumed kcal/mol) into:
-    - dG_kcal
-    - log10(IC50_uM)
-    - IC50_uM
-
-    Using:
-        dG = REF2015
-        Kd = exp(dG / (R * T))
-        IC50 ≈ Kd  (μM)
-    """
-    dG_kcal = float(ref2015_reu)
-    Kd_M = math.exp(dG_kcal / (R_KCAL * T_K))
-    IC50_uM = Kd_M * 1e6
-    log10_IC50_uM = math.log10(IC50_uM)
-    return dG_kcal, log10_IC50_uM, IC50_uM
+from typing import Any, Dict, List
 
 
 def read_ref2015_scores(csv_path: Path) -> List[Dict[str, Any]]:
@@ -42,6 +18,11 @@ def main() -> None:
     parser.add_argument("--library", default="data/ligand_library.csv")
     parser.add_argument("--outputs-dir", default="outputs_rapidock")
     parser.add_argument("--results-dir", default="results")
+    parser.add_argument(
+        "--vina-csv",
+        default=None,
+        help="Optional path to ranking_peptides_vina.csv. Defaults to <results-dir>/ranking_peptides_vina.csv.",
+    )
     args = parser.parse_args()
 
     library = list(csv.DictReader(Path(args.library).open(newline="", encoding="utf-8")))
@@ -49,6 +30,7 @@ def main() -> None:
     results_dir = Path(args.results_dir)
     results_dir.mkdir(parents=True, exist_ok=True)
     out_csv = results_dir / "ranking_peptides.csv"
+    vina_csv = Path(args.vina_csv) if args.vina_csv else (results_dir / "ranking_peptides_vina.csv")
 
     rows: List[Dict[str, Any]] = []
     missing = 0
@@ -75,12 +57,15 @@ def main() -> None:
             missing += 1
             continue
 
-        # Expect RAPiDock's ref2015_score.csv to contain a numeric 'ref2015' column
+        # RAPiDock outputs can use either 'ref2015' or 'ref2015score' headers.
         best_row = None
         best_val = None
         for s in scores:
             try:
-                val = float(s.get("ref2015", ""))
+                raw_val = s.get("ref2015", "")
+                if raw_val in (None, ""):
+                    raw_val = s.get("ref2015score", "")
+                val = float(raw_val)
             except ValueError:
                 continue
             if best_val is None or val < best_val:
@@ -90,8 +75,6 @@ def main() -> None:
         if best_row is None or best_val is None:
             missing += 1
             continue
-
-        dG_kcal, log10_ic50_uM, ic50_uM = reu_to_ic50_uM(best_val)
 
         run_seconds = None
         if run_seconds_path.exists():
@@ -108,9 +91,12 @@ def main() -> None:
                 "sequence": rec.get("sequence"),
                 "sequence_rapidock": rec.get("peptide_seq_rapidock"),
                 "rapidock_ref2015_score_REU": best_val,
-                "rapidock_dG_kcalmol": dG_kcal,
-                "affinity_pred_value_log10IC50uM": log10_ic50_uM,
-                "affinity_pred_IC50_uM": ic50_uM,
+                "rapidock_ref2015_rank": None,
+                "rapidock_ref2015_delta_from_best_REU": None,
+                # Keep these columns for downstream schema compatibility; disabled by design.
+                "rapidock_dG_kcalmol": None,
+                "affinity_pred_value_log10IC50uM": None,
+                "affinity_pred_IC50_uM": None,
                 "affinity_probability_binary": None,
                 "iptm": None,
                 "ptm": None,
@@ -123,6 +109,33 @@ def main() -> None:
             }
         )
 
+    # REF2015 is used as a relative ranking signal only.
+    rows.sort(key=lambda r: float(r["rapidock_ref2015_score_REU"]))
+    if rows:
+        best_score = float(rows[0]["rapidock_ref2015_score_REU"])
+        for idx, row in enumerate(rows, start=1):
+            score = float(row["rapidock_ref2015_score_REU"])
+            row["rapidock_ref2015_rank"] = idx
+            row["rapidock_ref2015_delta_from_best_REU"] = score - best_score
+
+    # Optional merge: Vina peptide rescoring rows keyed by peptide name.
+    vina_by_name: Dict[str, Dict[str, Any]] = {}
+    if vina_csv.exists():
+        with vina_csv.open(newline="", encoding="utf-8") as fh:
+            for vr in csv.DictReader(fh):
+                key = (vr.get("name") or "").strip()
+                if key:
+                    vina_by_name[key] = vr
+
+        for row in rows:
+            vr = vina_by_name.get((row.get("name") or "").strip())
+            if not vr:
+                continue
+            row["vina_best_kcalmol"] = vr.get("vina_best_kcalmol")
+            row["vina_delta_from_best_kcalmol"] = vr.get("vina_delta_from_best_kcalmol")
+            row["vina_rank"] = vr.get("vina_rank")
+            row["vina_source_pose"] = vr.get("vina_source_pose")
+
     fieldnames = [
         "name",
         "type",
@@ -130,6 +143,12 @@ def main() -> None:
         "sequence",
         "sequence_rapidock",
         "rapidock_ref2015_score_REU",
+        "rapidock_ref2015_rank",
+        "rapidock_ref2015_delta_from_best_REU",
+        "vina_best_kcalmol",
+        "vina_delta_from_best_kcalmol",
+        "vina_rank",
+        "vina_source_pose",
         "rapidock_dG_kcalmol",
         "affinity_pred_value_log10IC50uM",
         "affinity_pred_IC50_uM",
@@ -151,6 +170,10 @@ def main() -> None:
             writer.writerow(r)
 
     print(f"Wrote {len(rows)} peptide affinity rows to {out_csv}")
+    if vina_csv.exists():
+        print(f"Merged Vina rows from {vina_csv}")
+    else:
+        print(f"Vina CSV not found (skip merge): {vina_csv}")
     if missing:
         print(f"Missing or empty ref2015_score.csv for {missing} peptide entries.")
 

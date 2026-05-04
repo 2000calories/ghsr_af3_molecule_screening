@@ -42,7 +42,7 @@ The final table is unified in `results/ranking.csv`.
 - `scripts/visualize.py`: plots + top pose exports.
 - `notebooks/boltz2_ghsr_screen.ipynb`: Colab workflow notebook (Boltz-focused).
 - `notebooks/rapidock_colab_runner.ipynb`: Colab workflow notebook (RAPiDock upload/download).
-- `notebooks/rapidock_colab_drive_runner.ipynb`: Colab workflow notebook (RAPiDock reads/writes Google Drive).
+- `notebooks/rapidock_colab_drive_runner.ipynb`: Colab workflow notebook (RAPiDock reads/writes Google Drive; optional py3Dmol receptor+peptide preview, title 13).
 
 ## Quickstart
 
@@ -83,7 +83,7 @@ Use the Colab notebooks in `notebooks/`, which install **Miniforge + a Python 3.
    - Ensure checkpoint exists under RAPiDock model directory.
 5. **Run RAPiDock**
    - `python scripts/run_rapidock.py --rapidock-dir /path/to/RAPiDock --inputs-csv inputs_rapidock/protein_peptide.csv --outputs-dir outputs_rapidock --ckpt rapidock_local.pt --N 10 --batch-size 4 --cpu 8`
-   - Expected per peptide: `outputs_rapidock/<complex_name>/ref2015_score.csv`
+   - Expected per peptide: `outputs_rapidock/<complex_name>/ref2015_score.csv` (requires PyRosetta import to succeed in the RAPiDock env).
 6. **Parse RAPiDock peptide scores into IC50 estimates**
    - `python scripts/parse_rapidock_results.py --library data/ligand_library.csv --outputs-dir outputs_rapidock --results-dir results`
    - Output: `results/ranking_peptides.csv`
@@ -133,3 +133,23 @@ Suggested readout:
 ## Notes on curation quality
 
 The default CSV intentionally includes a mixed-confidence starter set. For production screening, fill missing SMILES/sequences with validated chemistry/sequence information before long runs.
+
+## 3D structure visualization (receptor + ligand)
+
+### GHS-R + small molecules (Boltz-2)
+
+Boltz writes prediction structures under `outputs/<ligand_id>/` (typically a single PDB containing receptor and ligand). After `python scripts/visualize.py`, copies also land in `results/top_poses/*.pdb` for quick inspection.
+
+- **Colab / Jupyter**: install `py3Dmol` and load a pose PDB; use cartoon for the protein and sticks for the ligand. Example pattern: [`notebooks/boltz2_ghsr_screen.ipynb`](notebooks/boltz2_ghsr_screen.ipynb) (cartoon + `resn: ['LIG']` for sticks). If sticks do not highlight the ligand, inspect the PDB for the actual HETATM/`resn` label and adjust the selection.
+
+### GHS-R + peptides (RAPiDock)
+
+RAPiDock does **not** put receptor and peptide in one ranked pose file. For each complex folder under `outputs_rapidock/<complex_name>/`:
+
+- **Receptor (docking frame):** `<complex_name>_protein_raw.pdb` (example: `ipamorelin_protein_raw.pdb`; chain **R** in typical 7F9Z extracts).
+- **Peptide pose:** `rank<N>_ref2015.pdb` (or `rank<N>.pdb` if REF2015 was skipped); chain **A** is common for the peptide.
+
+Load **both** files in the same viewer (two objects / two `addModel` calls) to see GHS-R with the docked peptide.
+
+- **Colab (Drive workflow):** optional **title 13** in [`notebooks/rapidock_colab_drive_runner.ipynb`](notebooks/rapidock_colab_drive_runner.ipynb) previews receptor + peptide with py3Dmol after batch outputs exist.
+- **Desktop:** PyMOL or ChimeraX — open the receptor PDB, then open the peptide rank PDB as a second structure; cartoon/surface on receptor, sticks or cartoon on peptide.
