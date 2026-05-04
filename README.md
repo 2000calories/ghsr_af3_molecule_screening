@@ -52,7 +52,7 @@ The final table is unified in `results/ranking.csv`.
    - `python scripts/prep_receptor.py --pdb-id 7F9Z --chain-id R --skip-pocket`
 3. Run small-molecule Boltz track:
    - `python scripts/build_inputs.py`
-   - `python scripts/run_screen.py --msa-mode server --recycling-steps 3 --diffusion-samples 1`
+   - `python scripts/run_screen.py --msa-mode server --recycling-steps 3 --diffusion-samples 1` (add `--accelerator cpu` to force CPU, or use default `auto`)
 4. Run peptide RAPiDock track (in RAPiDock env):
    - `python scripts/build_rapidock_inputs.py --receptor-pdb data/ghsr_receptor.pdb`
    - `python scripts/run_rapidock.py --rapidock-dir /path/to/RAPiDock`
@@ -67,6 +67,12 @@ The final table is unified in `results/ranking.csv`.
 RAPiDock includes precompiled Linux extension modules (for example `PeptideBuilder.so`) that are built against **CPython ≤3.11**. Colab’s default notebook runtime is often **Python 3.12**, where imports can fail with errors like `undefined symbol: _PyUnicode_Ready`.
 
 Use the Colab notebooks in `notebooks/`, which install **Miniforge + a Python 3.10 conda environment** and run `inference.py` via `conda run`.
+
+## Google Colab notes (Boltz-2)
+
+In [`notebooks/boltz2_ghsr_screen.ipynb`](notebooks/boltz2_ghsr_screen.ipynb), set `BOLTZ_CACHE` to **local Colab disk** (for example `/content/boltz_cache`), not `/content/drive/...`. Boltz reads and writes many small cache files; Google Drive mounts often trigger `OSError: [Errno 5] Input/output error` on those paths.
+
+For **`MisconfigurationException: No supported gpu backend found!`**, you are on a **CPU-only** runtime (or CUDA is unavailable). `scripts/run_screen.py` uses `--accelerator auto` by default: it requests the GPU when `torch.cuda.is_available()` and otherwise **CPU** (slower but works). To force a GPU, use **Runtime → Change runtime type → GPU** in Colab, or pass `--accelerator gpu` only when a GPU is actually present.
 
 ## Step-by-step: peptide IC50 from RAPiDock
 

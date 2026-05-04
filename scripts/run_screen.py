@@ -5,6 +5,20 @@ import time
 from pathlib import Path
 
 
+def resolve_accelerator(choice: str) -> str:
+    """Pick Boltz accelerator; auto uses GPU only when CUDA is available."""
+    if choice != "auto":
+        return choice
+    try:
+        import torch
+
+        if torch.cuda.is_available():
+            return "gpu"
+    except ImportError:
+        pass
+    return "cpu"
+
+
 def is_completed(output_dir: Path) -> bool:
     pred_dir = output_dir / "predictions"
     return pred_dir.exists() and any(pred_dir.rglob("*.json"))
@@ -17,8 +31,16 @@ def main() -> None:
     parser.add_argument("--recycling-steps", type=int, default=3)
     parser.add_argument("--diffusion-samples", type=int, default=1)
     parser.add_argument("--msa-mode", choices=["server", "none"], default="server")
+    parser.add_argument(
+        "--accelerator",
+        choices=["auto", "gpu", "cpu", "tpu"],
+        default="auto",
+        help="Boltz device: auto picks GPU when CUDA is available, else CPU (needed on CPU-only Colab).",
+    )
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
+
+    accelerator = resolve_accelerator(args.accelerator)
 
     inputs_dir = Path(args.inputs_dir)
     outputs_dir = Path(args.outputs_dir)
@@ -51,7 +73,9 @@ def main() -> None:
         if args.msa_mode == "server":
             cmd.append("--use_msa_server")
 
-        print(f"[RUN ] {ligand_id}")
+        cmd.extend(["--accelerator", accelerator])
+
+        print(f"[RUN ] {ligand_id} (accelerator={accelerator})")
         start = time.time()
         try:
             subprocess.run(cmd, check=True)
