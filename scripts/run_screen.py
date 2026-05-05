@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import shutil
 import subprocess
 import time
 from pathlib import Path
@@ -38,6 +39,11 @@ def main() -> None:
         help="Boltz device: auto picks GPU when CUDA is available, else CPU (needed on CPU-only Colab).",
     )
     parser.add_argument("--force", action="store_true")
+    parser.add_argument(
+        "--sync-dir",
+        default=None,
+        help="If set, copy outputs/<ligand_id>/ to <sync-dir>/<ligand_id>/ after each successful run.",
+    )
     args = parser.parse_args()
 
     accelerator = resolve_accelerator(args.accelerator)
@@ -45,6 +51,10 @@ def main() -> None:
     inputs_dir = Path(args.inputs_dir)
     outputs_dir = Path(args.outputs_dir)
     outputs_dir.mkdir(parents=True, exist_ok=True)
+
+    sync_dir = Path(args.sync_dir) if args.sync_dir else None
+    if sync_dir is not None:
+        sync_dir.mkdir(parents=True, exist_ok=True)
 
     input_files = sorted(inputs_dir.glob("*.yaml"))
     if not input_files:
@@ -84,6 +94,14 @@ def main() -> None:
             (out_dir / "run_seconds.txt").write_text(f"{elapsed:.3f}\n", encoding="utf-8")
         except subprocess.CalledProcessError as exc:
             print(f"[FAIL] {ligand_id}: return code {exc.returncode}")
+
+        if sync_dir is not None and is_completed(out_dir):
+            dst = sync_dir / ligand_id
+            try:
+                shutil.copytree(out_dir, dst, dirs_exist_ok=True)
+                print(f"[SYNC] {ligand_id} -> {dst}")
+            except OSError as exc:
+                print(f"[SYNC-FAIL] {ligand_id}: {exc}")
 
 
 if __name__ == "__main__":
