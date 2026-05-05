@@ -55,6 +55,9 @@ def main() -> None:
     sync_dir = Path(args.sync_dir) if args.sync_dir else None
     if sync_dir is not None:
         sync_dir.mkdir(parents=True, exist_ok=True)
+        print(f"[SYNC-CONFIG] enabled -> {sync_dir}")
+    else:
+        print("[SYNC-CONFIG] disabled (no --sync-dir provided)")
 
     input_files = sorted(inputs_dir.glob("*.yaml"))
     if not input_files:
@@ -67,6 +70,13 @@ def main() -> None:
 
         if not args.force and is_completed(out_dir):
             print(f"[SKIP] {ligand_id}: already completed")
+            if sync_dir is not None:
+                dst = sync_dir / ligand_id
+                try:
+                    shutil.copytree(out_dir, dst, dirs_exist_ok=True)
+                    print(f"[SYNC] {ligand_id} -> {dst} (from completed local output)")
+                except OSError as exc:
+                    print(f"[SYNC-FAIL] {ligand_id}: {exc}")
             continue
 
         cmd = [
@@ -95,13 +105,20 @@ def main() -> None:
         except subprocess.CalledProcessError as exc:
             print(f"[FAIL] {ligand_id}: return code {exc.returncode}")
 
-        if sync_dir is not None and is_completed(out_dir):
-            dst = sync_dir / ligand_id
-            try:
-                shutil.copytree(out_dir, dst, dirs_exist_ok=True)
-                print(f"[SYNC] {ligand_id} -> {dst}")
-            except OSError as exc:
-                print(f"[SYNC-FAIL] {ligand_id}: {exc}")
+        if sync_dir is None:
+            print(f"sync_dir is None, skipping sync")
+            continue
+
+        if not is_completed(out_dir):
+            print(f"[SYNC-SKIP] {ligand_id}: no predictions/*.json found in {out_dir}")
+            continue
+
+        dst = sync_dir / ligand_id
+        try:
+            shutil.copytree(out_dir, dst, dirs_exist_ok=True)
+            print(f"[SYNC] {ligand_id} -> {dst}")
+        except OSError as exc:
+            print(f"[SYNC-FAIL] {ligand_id}: {exc}")
 
 
 if __name__ == "__main__":
