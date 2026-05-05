@@ -1,12 +1,27 @@
 name,type,source,smiles,sequence,peptide_seq_rapidock,notes
 ghrelin_1_28_desacyl,peptide,endogenous,,GSSFLSPEHQRVQQRKESKKPPAKLQPR,,Des-acyl ghrelin sequence
 ghrelin_1_28_octanoyl_proxy,small_molecule,endogenous,,,Octanoylated ghrelin is not directly representable as plain peptide; provide SMILES manually if needed
-LEAP2_1_40,peptide,endogenous,,,,Provide validated human LEAP2(1-40) sequence before running
+obestatin,peptide,endogenous,,FNAPFDVGIKLSGVQYQQHSQAL,FNAPFDVGIKLSGVQYQQHSQAL,UniProt Q9UBU3 obestatin (preproghrelin 76-98); GHSR interaction debated in literature
+LEAP2_1_40,peptide,endogenous,,TPFWRGVSLRPIGASCRDDSECITRLCRKRRCSLSVAQE,TPFWRGVSLRPIGASCRDDSECITRLCRKRRCSLSVAQE,UniProt Q969E1 mature chain (38-77); endogenous GHSR modulator
 GHRP_6,peptide,synthetic,,HWAWFK,H[DTR]AW[DPN]K,Canonical one-letter backbone for His-D-Trp-Ala-Trp-D-Phe-Lys-NH2 (D stereochemistry approximated via [DTR]/[DPN])
 GHRP_2,peptide,synthetic,,AFAWFK,[DAL][DPN]AW[DPN]K,Approximate backbone for D-Ala-D-2-Nal-Ala-Trp-D-Phe-Lys-NH2 (2-Nal approximated as D-Phe)
+GHRP_1,peptide,synthetic,,AHFAWFK,AH[DPN]AW[DPN]K,GHRP-1 Ala-His-D-2Nal-Ala-Trp-D-Phe-Lys-NH2; D-residues approximated per GHRP_2/ipamorelin convention
 hexarelin,peptide,synthetic,,HWAWFK,H[DTR]AW[DPN]K,Canonical one-letter backbone for His-D-2Me-Trp-Ala-Trp-D-Phe-Lys-NH2 (2-Me-D-Trp approximated as [DTR])
 ipamorelin,peptide,synthetic,,AHFFK,[AIB]H[DPN][DPN]K,Approximate backbone for Aib-His-D-2-Nal-D-Phe-Lys-NH2 (Aib/2-Nal approximated as [AIB]/[DPN])
 examorelin,peptide,synthetic,,HWAWFK,H[DTR]AW[DPN]K,Synonym of hexarelin; backbone for His-D-2Me-Trp-Ala-Trp-D-Phe-Lys-NH2
+BPC_157,peptide,compounding_cat1,,GEPPPGKPADDAGLV,GEPPPGKPADDAGLV,FDA 503A bulk Category 1 (Feb 2026 interim list); BPC-157 pentadecapeptide per Wikipedia/DrugBank; not FDA-approved
+thymosin_alpha_1,peptide,compounding_cat1,,SDAAVDTSSEITTKDLKEKKEVVEEAEN,SDAAVDTSSEITTKDLKEKKEVVEEAEN,FDA bulk Category 1; thymosin alpha-1 (28 aa); N-terminal acetyl omitted for docking
+AOD_9604,peptide,compounding_cat1,,YLRIVQCRSVEGSCGF,YLRIVQCRSVEGSCGF,FDA bulk Category 1; hGH 177-191 with N-term Tyr; disulfide C7-C14 not enforced in RAPiDock
+semax,peptide,compounding_cat1,,MEHFPGP,MEHFPGP,FDA bulk Category 1; ACTH-derived heptapeptide; N-acetyl omitted
+selank,peptide,compounding_cat1,,TKPRPGP,TKPRPGP,FDA bulk Category 1; tuftsin-derived heptapeptide; N-acetyl omitted
+GHK,peptide,compounding_cat1,,GHK,GHK,FDA bulk Category 1; GHK tripeptide (GHK-Cu without copper)
+epitalon,peptide,compounding_cat1,,AEDG,AEDG,FDA bulk Category 1; epithalon tetrapeptide
+MOTS_c,peptide,compounding_cat1,,MRWQEMGYIFYPRKLR,MRWQEMGYIFYPRKLR,FDA bulk Category 1; human MOTS-c 16-mer
+KPV,peptide,compounding_cat1,,KPV,KPV,FDA bulk Category 1; Lys-Pro-Val tripeptide
+kisspeptin_10,peptide,compounding_cat1,,YNWNSFGLRF,YNWNSFGLRF,FDA bulk Category 1; human KiSS-1 decapeptide; C-terminal amidation omitted
+DSIP,peptide,compounding_cat1,,WAGGDASGE,WAGGDASGE,FDA bulk Category 1; delta sleep-inducing peptide
+CJC_1295_no_dac,peptide,compounding_cat1,,YADAIFTQSYRKVLAQLSARKLLQDILSR,Y[DAL]DAIFTQSYRKVLAQLSARKLLQDILSR,FDA bulk Category 1; Mod GRF 1-29; position-2 D-Ala as RAPiDock token DAL
+TB_500,peptide,compounding_cat1,,KLKKTETQEKNPLPSKETIEQEKQAGE,KLKKTETQEKNPLPSKETIEQEKQAGE,FDA bulk Category 1; thymosin beta-4 fragment 17-43 (UniProt P62328); N-Ac omitted
 tabimorelin,small_molecule,synthetic,,,Add canonical SMILES before running
 MK_0677_ibutamoren,small_molecule,positive_control,,,Add canonical SMILES before running
 macimorelin,small_molecule,positive_control,,,Add canonical SMILES before running
